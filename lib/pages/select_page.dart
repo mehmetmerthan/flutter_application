@@ -13,6 +13,7 @@ class SelectPage extends StatefulWidget {
 }
 
 class _MyAppState extends State<SelectPage> {
+  bool _isUploading = false;
   Gender selectedGender = Gender.unspecified;
   @override
   void initState() {
@@ -207,10 +208,23 @@ class _MyAppState extends State<SelectPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          setState(() {
+            _isUploading = true;
+          });
+
           await saveUserAttributes();
+
+          setState(() {
+            _isUploading = false;
+          });
+
           navi();
         },
-        child: const Icon(Icons.arrow_forward),
+        child: _isUploading
+            ? const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ) // Yükleme sırasında gösterilecek widget
+            : const Icon(Icons.arrow_forward),
       ),
     );
   }

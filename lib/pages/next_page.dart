@@ -16,6 +16,7 @@ class NextPage extends StatefulWidget {
 }
 
 class _NextPageState extends State<NextPage> {
+  bool _isUploading = false;
   Uint8List? myImage;
   TextEditingController aboutText = TextEditingController();
   TextEditingController country = TextEditingController();
@@ -96,10 +97,23 @@ class _NextPageState extends State<NextPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          setState(() {
+            _isUploading = true;
+          });
+
           await uploadImage();
+
+          setState(() {
+            _isUploading = false;
+          });
+
           navi();
         },
-        child: const Icon(Icons.save),
+        child: _isUploading
+            ? const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ) // Yükleme sırasında gösterilecek widget
+            : const Icon(Icons.arrow_forward),
       ),
     );
   }
