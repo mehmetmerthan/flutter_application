@@ -1,7 +1,7 @@
 {
-  "resourceName": "s3myappstorage",
-  "bucketName": "my-app-storage",
-  "policyUUID": "be52ffdb",
+  "resourceName": "deneme",
+  "policyUUID": "189097b1",
+  "bucketName": "deneme123",
   "storageAccess": "authAndGuest",
   "guestAccess": [
     "CREATE_AND_UPDATE",
@@ -9,8 +9,10 @@
     "DELETE"
   ],
   "authAccess": [
-    "READ",
     "CREATE_AND_UPDATE",
+    "READ",
     "DELETE"
-  ]
+  ],
+  "triggerFunction": "S3Trigger9ee1e729",
+  "groupAccess": {}
 }

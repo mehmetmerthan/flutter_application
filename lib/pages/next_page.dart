@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/pages/profile_page.dart';
 import '../models/ModelProvider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+//import 'package:amplify_storage_s3/amplify_storage_s3.dart';
+import 'package:aws_common/vm.dart';
 
 class NextPage extends StatefulWidget {
   const NextPage({Key? key}) : super(key: key);
@@ -19,7 +23,7 @@ class _NextPageState extends State<NextPage> {
   TextEditingController state = TextEditingController();
   TextEditingController city = TextEditingController();
   File? _selectedImage;
-  String url = '';
+  String? myKey;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +115,7 @@ class _NextPageState extends State<NextPage> {
           country: country.text,
           state: state.text,
           city: city.text,
-          pic: url);
+          pic: myKey);
       await Amplify.DataStore.save(updatedUser);
       safePrint('Saved item');
       Navigator.of(context).push(
@@ -123,49 +127,44 @@ class _NextPageState extends State<NextPage> {
   }
 
   Future<void> uploadImage() async {
+    final item = await Amplify.Auth.getCurrentUser();
+    myKey = "profil photos/${item.username}.png";
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       withData: false,
-      // Ensure to get file stream for better performance
       withReadStream: true,
-      allowedExtensions: ['jpg', 'png', 'jpeg'],
+      allowedExtensions: ['jpg', 'png', 'gif'],
     );
 
     if (result == null) {
+      safePrint('No file selected');
       return;
     }
     final platformFile = result.files.single;
-
-    setState(() {
-      _selectedImage = File(platformFile.path!);
-    });
-    final xxx = await Amplify.Auth.getCurrentUser();
-    // Upload file with its filename as the key
     try {
-      await Amplify.Storage.uploadFile(
+      final resizedImage = await FlutterImageCompress.compressWithFile(
+        platformFile.path!,
+        minWidth: 110,
+        minHeight: 110,
+        quality: 85,
+      );
+      //Uint8List imageData = resizedImage!;
+      //File resizedFile = File.fromRawPath(imageData);
+      //final awsFile = AWSFilePlatform.fromFile(resizedFile);
+      final result = await Amplify.Storage.uploadFile(
         localFile: AWSFile.fromStream(
-          platformFile.readStream!,
-          size: platformFile.size,
+          Stream.fromIterable(resizedImage!.map((e) => [e])),
+          size: resizedImage.length,
         ),
-        key: "profil photos/${xxx.username}.jpg",
+        key: myKey!,
         onProgress: (progress) {
-          //safePrint('Fraction completed: ${progress.fractionCompleted}');
+          safePrint('Fraction completed: ${progress.fractionCompleted}');
         },
       ).result;
-      //safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
+      safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
     } on StorageException catch (e) {
       safePrint('Error uploading file: $e');
       rethrow;
     }
-
-    final item = await Amplify.Storage.getUrl(
-      key: "profil photos/${xxx.username}.jpg",
-      options: const StorageGetUrlOptions(
-        accessLevel: StorageAccessLevel.protected,
-      ),
-    ).result;
-    var myUrl = item.url.toString();
-    url = myUrl;
-    safePrint(url);
   }
 }

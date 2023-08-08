@@ -1,22 +1,32 @@
 {
-  "staging": {
+  "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-newapp-staging-214812-authRole",
-      "UnauthRoleArn": "arn:aws:iam::607219595660:role/amplify-newapp-staging-214812-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::607219595660:role/amplify-newapp-staging-214812-authRole",
+      "AuthRoleName": "amplify-flutterapp-dev-235524-authRole",
+      "UnauthRoleArn": "arn:aws:iam::607219595660:role/amplify-flutterapp-dev-235524-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::607219595660:role/amplify-flutterapp-dev-235524-authRole",
       "Region": "eu-west-1",
-      "DeploymentBucketName": "amplify-newapp-staging-214812-deployment",
-      "UnauthRoleName": "amplify-newapp-staging-214812-unauthRole",
-      "StackName": "amplify-newapp-staging-214812",
-      "StackId": "arn:aws:cloudformation:eu-west-1:607219595660:stack/amplify-newapp-staging-214812/9dceb200-2e59-11ee-be67-02757618dfab",
-      "AmplifyAppId": "d344aqftyqu1uu"
+      "DeploymentBucketName": "amplify-flutterapp-dev-235524-deployment",
+      "UnauthRoleName": "amplify-flutterapp-dev-235524-unauthRole",
+      "StackName": "amplify-flutterapp-dev-235524",
+      "StackId": "arn:aws:cloudformation:eu-west-1:607219595660:stack/amplify-flutterapp-dev-235524/bcb87130-3564-11ee-84b7-06d67a6abd2b",
+      "AmplifyAppId": "d1e6kdypzz0dsx"
     },
     "categories": {
+      "api": {
+        "flutterapp": {},
+        "newapp": {}
+      },
       "auth": {
         "newapp": {}
       },
+      "function": {
+        "S3Trigger9ee1e729": {
+          "deploymentBucketName": "amplify-flutterapp-dev-235524-deployment",
+          "s3Key": "amplify-builds/S3Trigger9ee1e729-5958616944414969796d-build.zip"
+        }
+      },
       "storage": {
-        "s3myappstorage": {}
+        "deneme": {}
       }
     }
   }
