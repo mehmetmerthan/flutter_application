@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application/models/ModelProvider.dart';
 import 'package:flutter_application/pages/next_page.dart';
 
-enum Gender { Male, Female, Unspecified }
+enum Gender { male, female, unspecified }
 
 class SelectPage extends StatefulWidget {
   const SelectPage({super.key});
@@ -13,7 +13,7 @@ class SelectPage extends StatefulWidget {
 }
 
 class _MyAppState extends State<SelectPage> {
-  Gender selectedGender = Gender.Unspecified;
+  Gender selectedGender = Gender.unspecified;
   @override
   void initState() {
     super.initState();
@@ -22,11 +22,11 @@ class _MyAppState extends State<SelectPage> {
 
   String genderToString(Gender gender) {
     switch (gender) {
-      case Gender.Male:
+      case Gender.male:
         return 'Male';
-      case Gender.Female:
+      case Gender.female:
         return 'Female';
-      case Gender.Unspecified:
+      case Gender.unspecified:
         return "Unspecified";
       default:
         return 'Unspecified';
@@ -189,15 +189,15 @@ class _MyAppState extends State<SelectPage> {
               },
               items: const [
                 DropdownMenuItem(
-                  value: Gender.Male,
+                  value: Gender.male,
                   child: Text('Male'),
                 ),
                 DropdownMenuItem(
-                  value: Gender.Female,
+                  value: Gender.female,
                   child: Text('Female'),
                 ),
                 DropdownMenuItem(
-                  value: Gender.Unspecified,
+                  value: Gender.unspecified,
                   child: Text("I don't want to specify"),
                 ),
               ],
@@ -206,8 +206,9 @@ class _MyAppState extends State<SelectPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          saveUserAttributes();
+        onPressed: () async {
+          await saveUserAttributes();
+          navi();
         },
         child: const Icon(Icons.arrow_forward),
       ),
@@ -239,8 +240,6 @@ class _MyAppState extends State<SelectPage> {
 
   Future<void> saveUserAttributes() async {
     final result = await Amplify.Auth.getCurrentUser();
-
-    // Check if the user already exists in the DataStore
     try {
       final existingUsers = await Amplify.DataStore.query(
         User.classType,
@@ -267,16 +266,17 @@ class _MyAppState extends State<SelectPage> {
             instrument: selectedInstruments,
             style: selectedGenres,
             gender: genderToString(selectedGender));
-
         await Amplify.DataStore.save(newUser);
       }
-
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => NextPage()),
-      );
       safePrint('Saved item');
     } catch (e) {
       safePrint('Error saving item: $e');
     }
+  }
+
+  Future<void> navi() async {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const NextPage()),
+    );
   }
 }

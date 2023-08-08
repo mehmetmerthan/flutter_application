@@ -13,8 +13,7 @@
     },
     "categories": {
       "api": {
-        "flutterapp": {},
-        "newapp": {}
+        "flutterapp": {}
       },
       "auth": {
         "newapp": {}

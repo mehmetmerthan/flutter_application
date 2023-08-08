@@ -1,15 +1,13 @@
 import 'dart:typed_data';
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-
 import '../models/ModelProvider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -36,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (isLoading)
-            CircleAvatar(
+            const CircleAvatar(
               radius: 80,
               child: CircularProgressIndicator(),
             ),
@@ -46,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
               backgroundImage: MemoryImage(myImage!),
             ),
           if (!isLoading && !hasImage && hasError)
-            CircleAvatar(
+            const CircleAvatar(
               radius: 80,
               child: Icon(Icons.person),
             ),

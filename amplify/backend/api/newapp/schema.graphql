@@ -34,5 +34,4 @@ type User @model @auth(rules: [{allow: public}]) {
   country: String
   state: String
   city: String
-}
- 
+} 

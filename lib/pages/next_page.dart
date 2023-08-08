@@ -7,8 +7,6 @@ import 'package:flutter_application/pages/profile_page.dart';
 import '../models/ModelProvider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-//import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-import 'package:aws_common/vm.dart';
 
 class NextPage extends StatefulWidget {
   const NextPage({Key? key}) : super(key: key);
@@ -18,6 +16,7 @@ class NextPage extends StatefulWidget {
 }
 
 class _NextPageState extends State<NextPage> {
+  Uint8List? myImage;
   TextEditingController aboutText = TextEditingController();
   TextEditingController country = TextEditingController();
   TextEditingController state = TextEditingController();
@@ -44,12 +43,14 @@ class _NextPageState extends State<NextPage> {
             ),
             const SizedBox(height: 10),
             GestureDetector(
-              onTap: uploadImage, // Function to pick an image
+              onTap: selectImage, // Function to pick an image
               child: CircleAvatar(
                 radius: 40,
                 backgroundImage:
                     _selectedImage != null ? FileImage(_selectedImage!) : null,
-                child: _selectedImage == null ? Icon(Icons.add_a_photo) : null,
+                child: _selectedImage == null
+                    ? const Icon(Icons.add_a_photo)
+                    : null,
               ),
             ),
             const SizedBox(height: 30),
@@ -94,8 +95,9 @@ class _NextPageState extends State<NextPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          saveUserAttributes();
+        onPressed: () async {
+          await uploadImage();
+          navi();
         },
         child: const Icon(Icons.save),
       ),
@@ -118,15 +120,13 @@ class _NextPageState extends State<NextPage> {
           pic: myKey);
       await Amplify.DataStore.save(updatedUser);
       safePrint('Saved item');
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => ProfilePage()),
-      );
     } catch (e) {
       safePrint('Error saving item: $e');
     }
   }
 
-  Future<void> uploadImage() async {
+  Future<void> selectImage() async {
+    await saveUserAttributes();
     final item = await Amplify.Auth.getCurrentUser();
     myKey = "profil photos/${item.username}.png";
     final result = await FilePicker.platform.pickFiles(
@@ -141,20 +141,24 @@ class _NextPageState extends State<NextPage> {
       return;
     }
     final platformFile = result.files.single;
+    final resizedImage = await FlutterImageCompress.compressWithFile(
+      platformFile.path!,
+      minWidth: 110,
+      minHeight: 110,
+      quality: 85,
+    );
+    setState(() {
+      _selectedImage = File(platformFile.path!);
+      myImage = resizedImage;
+    });
+  }
+
+  Future<void> uploadImage() async {
     try {
-      final resizedImage = await FlutterImageCompress.compressWithFile(
-        platformFile.path!,
-        minWidth: 110,
-        minHeight: 110,
-        quality: 85,
-      );
-      //Uint8List imageData = resizedImage!;
-      //File resizedFile = File.fromRawPath(imageData);
-      //final awsFile = AWSFilePlatform.fromFile(resizedFile);
       final result = await Amplify.Storage.uploadFile(
         localFile: AWSFile.fromStream(
-          Stream.fromIterable(resizedImage!.map((e) => [e])),
-          size: resizedImage.length,
+          Stream.fromIterable(myImage!.map((e) => [e])),
+          size: myImage!.length,
         ),
         key: myKey!,
         onProgress: (progress) {
@@ -166,5 +170,11 @@ class _NextPageState extends State<NextPage> {
       safePrint('Error uploading file: $e');
       rethrow;
     }
+  }
+
+  Future<void> navi() async {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const ProfilePage()),
+    );
   }
 }
