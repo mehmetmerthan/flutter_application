@@ -34,6 +34,8 @@ class Post extends amplify_core.Model {
   final List<Like>? _Likes;
   final List<String>? _style;
   final List<String>? _instrument;
+  final String? _pic_key;
+  final String? _video_key;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -83,6 +85,14 @@ class Post extends amplify_core.Model {
     return _instrument;
   }
   
+  String? get pic_key {
+    return _pic_key;
+  }
+  
+  String? get video_key {
+    return _video_key;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -91,9 +101,9 @@ class Post extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Post._internal({required this.id, content, required userID, Comments, Likes, style, instrument, createdAt, updatedAt}): _content = content, _userID = userID, _Comments = Comments, _Likes = Likes, _style = style, _instrument = instrument, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Post._internal({required this.id, content, required userID, Comments, Likes, style, instrument, pic_key, video_key, createdAt, updatedAt}): _content = content, _userID = userID, _Comments = Comments, _Likes = Likes, _style = style, _instrument = instrument, _pic_key = pic_key, _video_key = video_key, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Post({String? id, String? content, required String userID, List<Comment>? Comments, List<Like>? Likes, List<String>? style, List<String>? instrument}) {
+  factory Post({String? id, String? content, required String userID, List<Comment>? Comments, List<Like>? Likes, List<String>? style, List<String>? instrument, String? pic_key, String? video_key}) {
     return Post._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       content: content,
@@ -101,7 +111,9 @@ class Post extends amplify_core.Model {
       Comments: Comments != null ? List<Comment>.unmodifiable(Comments) : Comments,
       Likes: Likes != null ? List<Like>.unmodifiable(Likes) : Likes,
       style: style != null ? List<String>.unmodifiable(style) : style,
-      instrument: instrument != null ? List<String>.unmodifiable(instrument) : instrument);
+      instrument: instrument != null ? List<String>.unmodifiable(instrument) : instrument,
+      pic_key: pic_key,
+      video_key: video_key);
   }
   
   bool equals(Object other) {
@@ -118,7 +130,9 @@ class Post extends amplify_core.Model {
       DeepCollectionEquality().equals(_Comments, other._Comments) &&
       DeepCollectionEquality().equals(_Likes, other._Likes) &&
       DeepCollectionEquality().equals(_style, other._style) &&
-      DeepCollectionEquality().equals(_instrument, other._instrument);
+      DeepCollectionEquality().equals(_instrument, other._instrument) &&
+      _pic_key == other._pic_key &&
+      _video_key == other._video_key;
   }
   
   @override
@@ -134,6 +148,8 @@ class Post extends amplify_core.Model {
     buffer.write("userID=" + "$_userID" + ", ");
     buffer.write("style=" + (_style != null ? _style!.toString() : "null") + ", ");
     buffer.write("instrument=" + (_instrument != null ? _instrument!.toString() : "null") + ", ");
+    buffer.write("pic_key=" + "$_pic_key" + ", ");
+    buffer.write("video_key=" + "$_video_key" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -141,7 +157,7 @@ class Post extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Post copyWith({String? content, String? userID, List<Comment>? Comments, List<Like>? Likes, List<String>? style, List<String>? instrument}) {
+  Post copyWith({String? content, String? userID, List<Comment>? Comments, List<Like>? Likes, List<String>? style, List<String>? instrument, String? pic_key, String? video_key}) {
     return Post._internal(
       id: id,
       content: content ?? this.content,
@@ -149,7 +165,9 @@ class Post extends amplify_core.Model {
       Comments: Comments ?? this.Comments,
       Likes: Likes ?? this.Likes,
       style: style ?? this.style,
-      instrument: instrument ?? this.instrument);
+      instrument: instrument ?? this.instrument,
+      pic_key: pic_key ?? this.pic_key,
+      video_key: video_key ?? this.video_key);
   }
   
   Post copyWithModelFieldValues({
@@ -158,7 +176,9 @@ class Post extends amplify_core.Model {
     ModelFieldValue<List<Comment>?>? Comments,
     ModelFieldValue<List<Like>?>? Likes,
     ModelFieldValue<List<String>?>? style,
-    ModelFieldValue<List<String>?>? instrument
+    ModelFieldValue<List<String>?>? instrument,
+    ModelFieldValue<String?>? pic_key,
+    ModelFieldValue<String?>? video_key
   }) {
     return Post._internal(
       id: id,
@@ -167,7 +187,9 @@ class Post extends amplify_core.Model {
       Comments: Comments == null ? this.Comments : Comments.value,
       Likes: Likes == null ? this.Likes : Likes.value,
       style: style == null ? this.style : style.value,
-      instrument: instrument == null ? this.instrument : instrument.value
+      instrument: instrument == null ? this.instrument : instrument.value,
+      pic_key: pic_key == null ? this.pic_key : pic_key.value,
+      video_key: video_key == null ? this.video_key : video_key.value
     );
   }
   
@@ -189,11 +211,13 @@ class Post extends amplify_core.Model {
         : null,
       _style = json['style']?.cast<String>(),
       _instrument = json['instrument']?.cast<String>(),
+      _pic_key = json['pic_key'],
+      _video_key = json['video_key'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'content': _content, 'userID': _userID, 'Comments': _Comments?.map((Comment? e) => e?.toJson()).toList(), 'Likes': _Likes?.map((Like? e) => e?.toJson()).toList(), 'style': _style, 'instrument': _instrument, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'content': _content, 'userID': _userID, 'Comments': _Comments?.map((Comment? e) => e?.toJson()).toList(), 'Likes': _Likes?.map((Like? e) => e?.toJson()).toList(), 'style': _style, 'instrument': _instrument, 'pic_key': _pic_key, 'video_key': _video_key, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -204,6 +228,8 @@ class Post extends amplify_core.Model {
     'Likes': _Likes,
     'style': _style,
     'instrument': _instrument,
+    'pic_key': _pic_key,
+    'video_key': _video_key,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -220,6 +246,8 @@ class Post extends amplify_core.Model {
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Like'));
   static final STYLE = amplify_core.QueryField(fieldName: "style");
   static final INSTRUMENT = amplify_core.QueryField(fieldName: "instrument");
+  static final PIC_KEY = amplify_core.QueryField(fieldName: "pic_key");
+  static final VIDEO_KEY = amplify_core.QueryField(fieldName: "video_key");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Post";
     modelSchemaDefinition.pluralName = "Posts";
@@ -279,6 +307,18 @@ class Post extends amplify_core.Model {
       isRequired: false,
       isArray: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Post.PIC_KEY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Post.VIDEO_KEY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(

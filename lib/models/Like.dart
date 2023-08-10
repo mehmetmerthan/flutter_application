@@ -28,6 +28,8 @@ class Like extends amplify_core.Model {
   static const classType = const _LikeModelType();
   final String id;
   final String? _postID;
+  final String? _liked_by;
+  final String? _liked_by_pic;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -57,6 +59,23 @@ class Like extends amplify_core.Model {
     }
   }
   
+  String get liked_by {
+    try {
+      return _liked_by!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
+  }
+  
+  String? get liked_by_pic {
+    return _liked_by_pic;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -65,12 +84,14 @@ class Like extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Like._internal({required this.id, required postID, createdAt, updatedAt}): _postID = postID, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Like._internal({required this.id, required postID, required liked_by, liked_by_pic, createdAt, updatedAt}): _postID = postID, _liked_by = liked_by, _liked_by_pic = liked_by_pic, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Like({String? id, required String postID}) {
+  factory Like({String? id, required String postID, required String liked_by, String? liked_by_pic}) {
     return Like._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
-      postID: postID);
+      postID: postID,
+      liked_by: liked_by,
+      liked_by_pic: liked_by_pic);
   }
   
   bool equals(Object other) {
@@ -82,7 +103,9 @@ class Like extends amplify_core.Model {
     if (identical(other, this)) return true;
     return other is Like &&
       id == other.id &&
-      _postID == other._postID;
+      _postID == other._postID &&
+      _liked_by == other._liked_by &&
+      _liked_by_pic == other._liked_by_pic;
   }
   
   @override
@@ -95,6 +118,8 @@ class Like extends amplify_core.Model {
     buffer.write("Like {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("postID=" + "$_postID" + ", ");
+    buffer.write("liked_by=" + "$_liked_by" + ", ");
+    buffer.write("liked_by_pic=" + "$_liked_by_pic" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -102,34 +127,44 @@ class Like extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Like copyWith({String? postID}) {
+  Like copyWith({String? postID, String? liked_by, String? liked_by_pic}) {
     return Like._internal(
       id: id,
-      postID: postID ?? this.postID);
+      postID: postID ?? this.postID,
+      liked_by: liked_by ?? this.liked_by,
+      liked_by_pic: liked_by_pic ?? this.liked_by_pic);
   }
   
   Like copyWithModelFieldValues({
-    ModelFieldValue<String>? postID
+    ModelFieldValue<String>? postID,
+    ModelFieldValue<String>? liked_by,
+    ModelFieldValue<String?>? liked_by_pic
   }) {
     return Like._internal(
       id: id,
-      postID: postID == null ? this.postID : postID.value
+      postID: postID == null ? this.postID : postID.value,
+      liked_by: liked_by == null ? this.liked_by : liked_by.value,
+      liked_by_pic: liked_by_pic == null ? this.liked_by_pic : liked_by_pic.value
     );
   }
   
   Like.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _postID = json['postID'],
+      _liked_by = json['liked_by'],
+      _liked_by_pic = json['liked_by_pic'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'postID': _postID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'postID': _postID, 'liked_by': _liked_by, 'liked_by_pic': _liked_by_pic, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'postID': _postID,
+    'liked_by': _liked_by,
+    'liked_by_pic': _liked_by_pic,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -137,6 +172,8 @@ class Like extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<LikeModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<LikeModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final POSTID = amplify_core.QueryField(fieldName: "postID");
+  static final LIKED_BY = amplify_core.QueryField(fieldName: "liked_by");
+  static final LIKED_BY_PIC = amplify_core.QueryField(fieldName: "liked_by_pic");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Like";
     modelSchemaDefinition.pluralName = "Likes";
@@ -161,6 +198,18 @@ class Like extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: Like.POSTID,
       isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Like.LIKED_BY,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Like.LIKED_BY_PIC,
+      isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     

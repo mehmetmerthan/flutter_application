@@ -1,15 +1,16 @@
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/material.dart';
-import 'select_page.dart';
+import 'package:flutter_application/pages/home_page.dart';
+//import 'select_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class AuthPage extends StatefulWidget {
+  const AuthPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _MyAppState();
+  State<AuthPage> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<HomePage> {
+class _MyAppState extends State<AuthPage> {
   @override
   void initState() {
     super.initState();
@@ -86,7 +87,7 @@ class _MyAppState extends State<HomePage> {
         builder: Authenticator.builder(),
         home: const Scaffold(
           body: Center(
-            child: SelectPage(),
+            child: HomePage(),
           ),
         ),
       ),

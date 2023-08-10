@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:flutter_application/pages/auth_page.dart';
+//import 'package:flutter_application/pages/home_page.dart';
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
 
@@ -47,7 +48,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(),
+      home: AuthPage(),
     );
   }
 }

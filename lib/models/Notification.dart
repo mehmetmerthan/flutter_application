@@ -23,14 +23,15 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the Comment type in your schema. */
-class Comment extends amplify_core.Model {
-  static const classType = const _CommentModelType();
+/** This is an auto generated class representing the Notification type in your schema. */
+class Notification extends amplify_core.Model {
+  static const classType = const _NotificationModelType();
   final String id;
-  final String? _content;
-  final String? _postID;
+  final String? _liked_by;
+  final String? _liked_by_pic;
   final String? _comment_by;
   final String? _comment_by_pic;
+  final String? _userID;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -41,44 +42,39 @@ class Comment extends amplify_core.Model {
   @override
   String getId() => id;
   
-  CommentModelIdentifier get modelIdentifier {
-      return CommentModelIdentifier(
+  NotificationModelIdentifier get modelIdentifier {
+      return NotificationModelIdentifier(
         id: id
       );
   }
   
-  String? get content {
-    return _content;
+  String? get liked_by {
+    return _liked_by;
   }
   
-  String get postID {
-    try {
-      return _postID!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  String? get liked_by_pic {
+    return _liked_by_pic;
   }
   
-  String get comment_by {
-    try {
-      return _comment_by!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
+  String? get comment_by {
+    return _comment_by;
   }
   
   String? get comment_by_pic {
     return _comment_by_pic;
+  }
+  
+  String get userID {
+    try {
+      return _userID!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   amplify_core.TemporalDateTime? get createdAt {
@@ -89,15 +85,16 @@ class Comment extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Comment._internal({required this.id, content, required postID, required comment_by, comment_by_pic, createdAt, updatedAt}): _content = content, _postID = postID, _comment_by = comment_by, _comment_by_pic = comment_by_pic, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Notification._internal({required this.id, liked_by, liked_by_pic, comment_by, comment_by_pic, required userID, createdAt, updatedAt}): _liked_by = liked_by, _liked_by_pic = liked_by_pic, _comment_by = comment_by, _comment_by_pic = comment_by_pic, _userID = userID, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Comment({String? id, String? content, required String postID, required String comment_by, String? comment_by_pic}) {
-    return Comment._internal(
+  factory Notification({String? id, String? liked_by, String? liked_by_pic, String? comment_by, String? comment_by_pic, required String userID}) {
+    return Notification._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
-      content: content,
-      postID: postID,
+      liked_by: liked_by,
+      liked_by_pic: liked_by_pic,
       comment_by: comment_by,
-      comment_by_pic: comment_by_pic);
+      comment_by_pic: comment_by_pic,
+      userID: userID);
   }
   
   bool equals(Object other) {
@@ -107,12 +104,13 @@ class Comment extends amplify_core.Model {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Comment &&
+    return other is Notification &&
       id == other.id &&
-      _content == other._content &&
-      _postID == other._postID &&
+      _liked_by == other._liked_by &&
+      _liked_by_pic == other._liked_by_pic &&
       _comment_by == other._comment_by &&
-      _comment_by_pic == other._comment_by_pic;
+      _comment_by_pic == other._comment_by_pic &&
+      _userID == other._userID;
   }
   
   @override
@@ -122,12 +120,13 @@ class Comment extends amplify_core.Model {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("Comment {");
+    buffer.write("Notification {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("content=" + "$_content" + ", ");
-    buffer.write("postID=" + "$_postID" + ", ");
+    buffer.write("liked_by=" + "$_liked_by" + ", ");
+    buffer.write("liked_by_pic=" + "$_liked_by_pic" + ", ");
     buffer.write("comment_by=" + "$_comment_by" + ", ");
     buffer.write("comment_by_pic=" + "$_comment_by_pic" + ", ");
+    buffer.write("userID=" + "$_userID" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -135,62 +134,68 @@ class Comment extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Comment copyWith({String? content, String? postID, String? comment_by, String? comment_by_pic}) {
-    return Comment._internal(
+  Notification copyWith({String? liked_by, String? liked_by_pic, String? comment_by, String? comment_by_pic, String? userID}) {
+    return Notification._internal(
       id: id,
-      content: content ?? this.content,
-      postID: postID ?? this.postID,
+      liked_by: liked_by ?? this.liked_by,
+      liked_by_pic: liked_by_pic ?? this.liked_by_pic,
       comment_by: comment_by ?? this.comment_by,
-      comment_by_pic: comment_by_pic ?? this.comment_by_pic);
+      comment_by_pic: comment_by_pic ?? this.comment_by_pic,
+      userID: userID ?? this.userID);
   }
   
-  Comment copyWithModelFieldValues({
-    ModelFieldValue<String?>? content,
-    ModelFieldValue<String>? postID,
-    ModelFieldValue<String>? comment_by,
-    ModelFieldValue<String?>? comment_by_pic
+  Notification copyWithModelFieldValues({
+    ModelFieldValue<String?>? liked_by,
+    ModelFieldValue<String?>? liked_by_pic,
+    ModelFieldValue<String?>? comment_by,
+    ModelFieldValue<String?>? comment_by_pic,
+    ModelFieldValue<String>? userID
   }) {
-    return Comment._internal(
+    return Notification._internal(
       id: id,
-      content: content == null ? this.content : content.value,
-      postID: postID == null ? this.postID : postID.value,
+      liked_by: liked_by == null ? this.liked_by : liked_by.value,
+      liked_by_pic: liked_by_pic == null ? this.liked_by_pic : liked_by_pic.value,
       comment_by: comment_by == null ? this.comment_by : comment_by.value,
-      comment_by_pic: comment_by_pic == null ? this.comment_by_pic : comment_by_pic.value
+      comment_by_pic: comment_by_pic == null ? this.comment_by_pic : comment_by_pic.value,
+      userID: userID == null ? this.userID : userID.value
     );
   }
   
-  Comment.fromJson(Map<String, dynamic> json)  
+  Notification.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _content = json['content'],
-      _postID = json['postID'],
+      _liked_by = json['liked_by'],
+      _liked_by_pic = json['liked_by_pic'],
       _comment_by = json['comment_by'],
       _comment_by_pic = json['comment_by_pic'],
+      _userID = json['userID'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'content': _content, 'postID': _postID, 'comment_by': _comment_by, 'comment_by_pic': _comment_by_pic, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'liked_by': _liked_by, 'liked_by_pic': _liked_by_pic, 'comment_by': _comment_by, 'comment_by_pic': _comment_by_pic, 'userID': _userID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
-    'content': _content,
-    'postID': _postID,
+    'liked_by': _liked_by,
+    'liked_by_pic': _liked_by_pic,
     'comment_by': _comment_by,
     'comment_by_pic': _comment_by_pic,
+    'userID': _userID,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
 
-  static final amplify_core.QueryModelIdentifier<CommentModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<CommentModelIdentifier>();
+  static final amplify_core.QueryModelIdentifier<NotificationModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<NotificationModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
-  static final CONTENT = amplify_core.QueryField(fieldName: "content");
-  static final POSTID = amplify_core.QueryField(fieldName: "postID");
+  static final LIKED_BY = amplify_core.QueryField(fieldName: "liked_by");
+  static final LIKED_BY_PIC = amplify_core.QueryField(fieldName: "liked_by_pic");
   static final COMMENT_BY = amplify_core.QueryField(fieldName: "comment_by");
   static final COMMENT_BY_PIC = amplify_core.QueryField(fieldName: "comment_by_pic");
+  static final USERID = amplify_core.QueryField(fieldName: "userID");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "Comment";
-    modelSchemaDefinition.pluralName = "Comments";
+    modelSchemaDefinition.name = "Notification";
+    modelSchemaDefinition.pluralName = "Notifications";
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -204,32 +209,38 @@ class Comment extends amplify_core.Model {
     ];
     
     modelSchemaDefinition.indexes = [
-      amplify_core.ModelIndex(fields: const ["postID"], name: "byPost")
+      amplify_core.ModelIndex(fields: const ["userID"], name: "byUser")
     ];
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Comment.CONTENT,
+      key: Notification.LIKED_BY,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Comment.POSTID,
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Comment.COMMENT_BY,
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Comment.COMMENT_BY_PIC,
+      key: Notification.LIKED_BY_PIC,
       isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Notification.COMMENT_BY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Notification.COMMENT_BY_PIC,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Notification.USERID,
+      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
@@ -249,29 +260,29 @@ class Comment extends amplify_core.Model {
   });
 }
 
-class _CommentModelType extends amplify_core.ModelType<Comment> {
-  const _CommentModelType();
+class _NotificationModelType extends amplify_core.ModelType<Notification> {
+  const _NotificationModelType();
   
   @override
-  Comment fromJson(Map<String, dynamic> jsonData) {
-    return Comment.fromJson(jsonData);
+  Notification fromJson(Map<String, dynamic> jsonData) {
+    return Notification.fromJson(jsonData);
   }
   
   @override
   String modelName() {
-    return 'Comment';
+    return 'Notification';
   }
 }
 
 /**
  * This is an auto generated class representing the model identifier
- * of [Comment] in your schema.
+ * of [Notification] in your schema.
  */
-class CommentModelIdentifier implements amplify_core.ModelIdentifier<Comment> {
+class NotificationModelIdentifier implements amplify_core.ModelIdentifier<Notification> {
   final String id;
 
-  /** Create an instance of CommentModelIdentifier using [id] the primary key. */
-  const CommentModelIdentifier({
+  /** Create an instance of NotificationModelIdentifier using [id] the primary key. */
+  const NotificationModelIdentifier({
     required this.id});
   
   @override
@@ -289,7 +300,7 @@ class CommentModelIdentifier implements amplify_core.ModelIdentifier<Comment> {
   String serializeAsString() => serializeAsMap().values.join('#');
   
   @override
-  String toString() => 'CommentModelIdentifier(id: $id)';
+  String toString() => 'NotificationModelIdentifier(id: $id)';
   
   @override
   bool operator ==(Object other) {
@@ -297,7 +308,7 @@ class CommentModelIdentifier implements amplify_core.ModelIdentifier<Comment> {
       return true;
     }
     
-    return other is CommentModelIdentifier &&
+    return other is NotificationModelIdentifier &&
       id == other.id;
   }
   

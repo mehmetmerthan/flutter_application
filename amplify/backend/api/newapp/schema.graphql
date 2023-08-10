@@ -1,12 +1,25 @@
+type Notification @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  liked_by: String
+  liked_by_pic: String
+  comment_by: String
+  comment_by_pic: String
+  userID: ID! @index(name: "byUser")
+}
+
 type Like @model @auth(rules: [{allow: public}]) {
   id: ID!
   postID: ID! @index(name: "byPost")
+  liked_by: String!
+  liked_by_pic: String
 }
 
 type Comment @model @auth(rules: [{allow: public}]) {
   id: ID!
   content: String
   postID: ID! @index(name: "byPost")
+  comment_by: String!
+  comment_by_pic: String
 }
 
 type Post @model @auth(rules: [{allow: public}]) {
@@ -17,6 +30,8 @@ type Post @model @auth(rules: [{allow: public}]) {
   Likes: [Like] @hasMany(indexName: "byPost", fields: ["id"])
   style: [String]
   instrument: [String]
+  pic_key: String
+  video_key: String
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -34,4 +49,6 @@ type User @model @auth(rules: [{allow: public}]) {
   country: String
   state: String
   city: String
-} 
+  Notifications: [Notification] @hasMany(indexName: "byUser", fields: ["id"])
+}
+ 
