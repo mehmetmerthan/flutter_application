@@ -21,22 +21,26 @@
 
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'Comment.dart';
+import 'Instrument.dart';
 import 'Like.dart';
 import 'Notification.dart';
 import 'Post.dart';
+import 'Style.dart';
 import 'User.dart';
 
 export 'Comment.dart';
+export 'Instrument.dart';
 export 'Like.dart';
 export 'Notification.dart';
 export 'Post.dart';
+export 'Style.dart';
 export 'User.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "2e6d17d6ffd2ef5c64ef1849ed73438d";
+  String version = "8ddbb66fc621ff0f505908112baa4cb1";
   @override
-  List<amplify_core.ModelSchema> modelSchemas = [Comment.schema, Like.schema, Notification.schema, Post.schema, User.schema];
+  List<amplify_core.ModelSchema> modelSchemas = [Comment.schema, Instrument.schema, Like.schema, Notification.schema, Post.schema, Style.schema, User.schema];
   @override
   List<amplify_core.ModelSchema> customTypeSchemas = [];
   static final ModelProvider _instance = ModelProvider();
@@ -47,12 +51,16 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
     switch(modelName) {
       case "Comment":
         return Comment.classType;
+      case "Instrument":
+        return Instrument.classType;
       case "Like":
         return Like.classType;
       case "Notification":
         return Notification.classType;
       case "Post":
         return Post.classType;
+      case "Style":
+        return Style.classType;
       case "User":
         return User.classType;
       default:

@@ -13,10 +13,32 @@ class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
 
   @override
-  _CreatePostScreenState createState() => _CreatePostScreenState();
+  createState() => _CreatePostScreenState();
 }
 
 class _CreatePostScreenState extends State<CreatePostScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _tagController = TextEditingController();
+    _instrumentController = TextEditingController();
+    getGenresAndInstruments();
+  }
+
+  @override
+  void dispose() {
+    _disposeVideoPlayer(); // Sayfa kapatıldığında video player'ı temizleme
+    _tagController?.dispose();
+    _instrumentController?.dispose();
+    super.dispose();
+  }
+
+  final List<String> _instruments = [];
+  List<String> _availableInstruments = [];
+  final List<String> _tags = [];
+  List<String> _availableTags = [];
+  TextEditingController? _tagController;
+  TextEditingController? _instrumentController;
   File? _videoFile;
   Uint8List? _imageBytes;
   bool _isPhotoSelected = true;
@@ -99,12 +121,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   @override
-  void dispose() {
-    _disposeVideoPlayer(); // Sayfa kapatıldığında video player'ı temizleme
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -184,6 +200,115 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
               ),
               const SizedBox(height: 16.0),
+              Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return const Iterable<String>.empty();
+                  }
+                  return _availableTags.where((String option) {
+                    return option
+                        .toLowerCase()
+                        .startsWith(textEditingValue.text.toLowerCase());
+                  });
+                },
+                onSelected: (String selection) {
+                  setState(() {
+                    _tags.add(selection);
+                    _tagController?.clear();
+                  });
+                },
+                fieldViewBuilder: (BuildContext context,
+                    TextEditingController fieldController,
+                    FocusNode focusNode,
+                    VoidCallback onFieldSubmitted) {
+                  _tagController = fieldController;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: fieldController,
+                        focusNode: focusNode,
+                        onChanged: (value) {
+                          // Implement your onChanged logic here if needed
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Tag ekleyin (örn: pop, rock, indie)',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Wrap(
+                        spacing: 8.0,
+                        children: _tags.map((tag) {
+                          return Chip(
+                            label: Text(tag),
+                            onDeleted: () {
+                              setState(() {
+                                _tags.remove(tag);
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 16.0),
+              Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return const Iterable<String>.empty();
+                  }
+                  return _availableInstruments.where((String option) {
+                    return option
+                        .toLowerCase()
+                        .startsWith(textEditingValue.text.toLowerCase());
+                  });
+                },
+                onSelected: (String selection) {
+                  setState(() {
+                    _instruments.add(selection);
+                    _instrumentController?.clear();
+                  });
+                },
+                fieldViewBuilder: (BuildContext context,
+                    TextEditingController fieldController,
+                    FocusNode focusNode,
+                    VoidCallback onFieldSubmitted) {
+                  _instrumentController = fieldController;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextFormField(
+                        controller: fieldController,
+                        focusNode: focusNode,
+                        onChanged: (value) {
+                          // Implement your onChanged logic here if needed
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Enstrüman ekleyin',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Wrap(
+                        spacing: 8.0,
+                        children: _instruments.map((instrument) {
+                          return Chip(
+                            label: Text(instrument),
+                            onDeleted: () {
+                              setState(() {
+                                _instruments.remove(instrument);
+                              });
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  );
+                },
+              ),
               ElevatedButton(
                 onPressed: () async {
                   setState(() {
@@ -199,7 +324,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 child: _isUploading
                     ? const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ) // Yükleme sırasında gösterilecek widget
+                      )
                     : const Text('Paylaş'),
               ),
             ],
@@ -268,7 +393,26 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       content: _postText,
       pic_key: _picKey!,
       video_key: _videoKey!,
+      instrument: _instruments,
+      style: _tags,
     );
     await Amplify.DataStore.save(post);
+  }
+
+  Future<void> getGenresAndInstruments() async {
+    try {
+      final styles = await Amplify.DataStore.query(Style.classType);
+      final instruments = await Amplify.DataStore.query(Instrument.classType);
+
+      setState(() {
+        _availableTags = styles.expand((style) => style.style_name!).toList();
+        _availableInstruments = instruments
+            .expand((instrument) => instrument.instrument_name!)
+            .toList();
+      });
+    } on DataStoreException catch (e) {
+      safePrint(
+          'Something went wrong querying genres and instruments: ${e.message}');
+    }
   }
 }

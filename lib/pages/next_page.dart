@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:country_state_city_pro/country_state_city_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application/pages/profile_page.dart';
+import 'package:flutter_application/pages/home_page.dart';
 import '../models/ModelProvider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -188,7 +188,7 @@ class _NextPageState extends State<NextPage> {
 
   Future<void> navi() async {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
+      MaterialPageRoute(builder: (context) => const HomePage()),
     );
   }
 }

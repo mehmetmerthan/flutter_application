@@ -1,3 +1,13 @@
+type Instrument @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  instrument_name: [String]
+}
+
+type Style @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  style_name: [String]
+}
+
 type Notification @model @auth(rules: [{allow: public}]) {
   id: ID!
   liked_by: String

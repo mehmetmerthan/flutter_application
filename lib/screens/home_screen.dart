@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import '../models/ModelProvider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,4 +61,36 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+  File? myFile;
+  Future<void> getKey() async {
+    final item = await Amplify.Auth.getCurrentUser();
+    try {
+      final existingUsers = await Amplify.DataStore.query(
+        User.classType,
+        where: User.USER_NAME.eq(item.username),
+      );
+      final existingUser = existingUsers.first;
+      Post? post = existingUser.Posts?.first;
+    } on StorageException catch (e) {
+      safePrint(e.message);
+    }
+    //downloadToMemory();
+  }
+
+  // Future<void> downloadToMemory() async {
+  //   try {
+  //     final result = await Amplify.Storage.downloadData(
+  //       key: myKey!,
+  //       onProgress: (progress) {
+  //         safePrint('Fraction completed: ${progress.fractionCompleted}');
+  //       },
+  //     ).result;
+  //     setState(() {
+  //       myData = Uint8List.fromList(result.bytes);
+  //     });
+  //   } on StorageException catch (e) {
+  //     safePrint(e.message);
+  //   }
+  // }
 }

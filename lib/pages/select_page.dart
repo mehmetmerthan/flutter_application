@@ -19,6 +19,7 @@ class _MyAppState extends State<SelectPage> {
   void initState() {
     super.initState();
     fetchCurrentUserAttributes();
+    getGenresAndInstruments();
   }
 
   String genderToString(Gender gender) {
@@ -34,32 +35,28 @@ class _MyAppState extends State<SelectPage> {
     }
   }
 
+  Future<void> getGenresAndInstruments() async {
+    try {
+      final styles = await Amplify.DataStore.query(Style.classType);
+      final instruments = await Amplify.DataStore.query(Instrument.classType);
+
+      setState(() {
+        availableGenres = styles.expand((style) => style.style_name!).toList();
+        availableInstruments = instruments
+            .expand((instrument) => instrument.instrument_name!)
+            .toList();
+      });
+    } on DataStoreException catch (e) {
+      safePrint(
+          'Something went wrong querying genres and instruments: ${e.message}');
+    }
+  }
+
   List<String> selectedGenres = [];
   List<String> selectedInstruments = [];
 
-  final List<String> availableGenres = [
-    'Pop',
-    'Rock',
-    'Hip Hop',
-    'Electronic',
-    'Classical',
-    'Jazz',
-    'Country',
-    'R&B',
-    'Reggae',
-  ];
-
-  final List<String> availableInstruments = [
-    'Guitar',
-    'Piano',
-    'Violin',
-    'Drums',
-    'Saxophone',
-    'Flute',
-    'Trumpet',
-    'Bass Guitar',
-    'Synthesizer',
-  ];
+  List<String> availableGenres = [];
+  List<String> availableInstruments = [];
 
   bool isGenreSelected(String genre) {
     return selectedGenres.contains(genre);
@@ -89,15 +86,6 @@ class _MyAppState extends State<SelectPage> {
         selectedInstruments.add(instrument);
       }
     });
-  }
-
-  void printSelectedGenres() {
-    safePrint('Selected Genres: $selectedGenres');
-  }
-
-  void printSelectedInstruments() {
-    // Yeni eklenen fonksiyon
-    safePrint('Selected Instruments: $selectedInstruments');
   }
 
   @override

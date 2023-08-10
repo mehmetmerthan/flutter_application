@@ -1,6 +1,7 @@
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application/pages/home_page.dart';
+import 'package:flutter_application/pages/select_page.dart';
+import 'package:flutter_application/screens/create_post_screen.dart';
 //import 'select_page.dart';
 
 class AuthPage extends StatefulWidget {
@@ -87,7 +88,7 @@ class _MyAppState extends State<AuthPage> {
         builder: Authenticator.builder(),
         home: const Scaffold(
           body: Center(
-            child: HomePage(),
+            child: CreatePostScreen(),
           ),
         ),
       ),
