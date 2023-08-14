@@ -120,6 +120,9 @@ class _NextPageState extends State<NextPage> {
 
   Future<void> saveUserAttributes() async {
     final result = await Amplify.Auth.getCurrentUser();
+    setState(() {
+      myKey = "profil photos/${DateTime.now()} ${result.username}.jpg";
+    });
     try {
       final existingUsers = await Amplify.DataStore.query(
         User.classType,
@@ -127,11 +130,12 @@ class _NextPageState extends State<NextPage> {
       );
       final existingUser = existingUsers.first;
       final updatedUser = existingUser.copyWith(
-          bio: aboutText.text,
-          country: country.text,
-          state: state.text,
-          city: city.text,
-          pic: myKey);
+        bio: aboutText.text,
+        country: country.text,
+        state: state.text,
+        city: city.text,
+        pic_key: myKey,
+      );
       await Amplify.DataStore.save(updatedUser);
       safePrint('Saved item');
     } catch (e) {
@@ -140,9 +144,6 @@ class _NextPageState extends State<NextPage> {
   }
 
   Future<void> selectImage() async {
-    await saveUserAttributes();
-    final item = await Amplify.Auth.getCurrentUser();
-    myKey = "profil photos/${item.username}.png";
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       withData: false,
@@ -168,6 +169,7 @@ class _NextPageState extends State<NextPage> {
   }
 
   Future<void> uploadImage() async {
+    await saveUserAttributes();
     try {
       final result = await Amplify.Storage.uploadFile(
         localFile: AWSFile.fromStream(

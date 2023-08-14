@@ -5,9 +5,13 @@ import 'package:aws_common/vm.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_application/models/ModelProvider.dart';
+import 'package:flutter_application/pages/home_page.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:video_compress/video_compress.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+
+final List<VideoPlayerController?> _controllers = [];
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -21,32 +25,28 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   void initState() {
     super.initState();
     _tagController = TextEditingController();
-    _instrumentController = TextEditingController();
     getGenresAndInstruments();
   }
 
   @override
   void dispose() {
-    _disposeVideoPlayer(); // Sayfa kapatıldığında video player'ı temizleme
-    _tagController?.dispose();
-    _instrumentController?.dispose();
+    for (var controller in _controllers) {
+      controller?.dispose();
+    }
     super.dispose();
   }
 
-  final List<String> _instruments = [];
-  List<String> _availableInstruments = [];
+  String? _thumbnailKey;
   final List<String> _tags = [];
   List<String> _availableTags = [];
   TextEditingController? _tagController;
-  TextEditingController? _instrumentController;
   File? _videoFile;
   Uint8List? _imageBytes;
   bool _isPhotoSelected = true;
   String _postText = '';
   String _selectedFilePath = '';
   VideoPlayerController? _videoPlayerController;
-  String? _picKey = "";
-  String? _videoKey = "";
+  String? _key = "";
   bool _isUploading = false;
   void _toggleMediaType(bool isPhoto) {
     setState(() {
@@ -232,7 +232,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           // Implement your onChanged logic here if needed
                         },
                         decoration: const InputDecoration(
-                          hintText: 'Tag ekleyin (örn: pop, rock, indie)',
+                          hintText: 'Tag ekleyin (örn: pop, rock, guitar)',
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -255,60 +255,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
               ),
               const SizedBox(height: 16.0),
-              Autocomplete<String>(
-                optionsBuilder: (TextEditingValue textEditingValue) {
-                  if (textEditingValue.text == '') {
-                    return const Iterable<String>.empty();
-                  }
-                  return _availableInstruments.where((String option) {
-                    return option
-                        .toLowerCase()
-                        .startsWith(textEditingValue.text.toLowerCase());
-                  });
-                },
-                onSelected: (String selection) {
-                  setState(() {
-                    _instruments.add(selection);
-                    _instrumentController?.clear();
-                  });
-                },
-                fieldViewBuilder: (BuildContext context,
-                    TextEditingController fieldController,
-                    FocusNode focusNode,
-                    VoidCallback onFieldSubmitted) {
-                  _instrumentController = fieldController;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextFormField(
-                        controller: fieldController,
-                        focusNode: focusNode,
-                        onChanged: (value) {
-                          // Implement your onChanged logic here if needed
-                        },
-                        decoration: const InputDecoration(
-                          hintText: 'Enstrüman ekleyin',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Wrap(
-                        spacing: 8.0,
-                        children: _instruments.map((instrument) {
-                          return Chip(
-                            label: Text(instrument),
-                            onDeleted: () {
-                              setState(() {
-                                _instruments.remove(instrument);
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  );
-                },
-              ),
               ElevatedButton(
                 onPressed: () async {
                   setState(() {
@@ -320,6 +266,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   setState(() {
                     _isUploading = false;
                   });
+                  await navigate();
                 },
                 child: _isUploading
                     ? const CircularProgressIndicator(
@@ -364,38 +311,72 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     await _compress();
     final item = await Amplify.Auth.getCurrentUser();
     if (_isPhotoSelected) {
-      _picKey = "posts/images/${item.username}.jpg";
+      _key = "posts/images/${DateTime.now()} ${item.username}.jpg";
       final result = await Amplify.Storage.uploadFile(
         localFile: AWSFile.fromStream(
           Stream.fromIterable(_imageBytes!.map((e) => [e])),
           size: _imageBytes!.length,
         ),
-        key: _picKey!,
+        key: _key!,
         onProgress: (progress) {
           safePrint('Fraction completed: ${progress.fractionCompleted}');
         },
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
     } else {
-      _videoKey = "posts/videos/${item.username}";
+      _key = "posts/videos/${DateTime.now()} ${item.username}.jpg";
       final awsFile = AWSFilePlatform.fromFile(_videoFile!);
       final result = await Amplify.Storage.uploadFile(
         localFile: awsFile,
-        key: _videoKey!,
+        key: _key!,
         onProgress: (progress) {
           safePrint('Fraction completed: ${progress.fractionCompleted}');
         },
       ).result;
       safePrint('Successfully uploaded file: ${result.uploadedItem.key}');
+      final thumbnailPath = await VideoThumbnail.thumbnailFile(
+        video: _selectedFilePath,
+        quality: 100,
+        maxWidth: 200, // Thumbnail'ın genişliği
+        maxHeight: 200, // Thumbnail'ın yüksekliği
+      );
+
+      final thumbnailBytes = File(thumbnailPath!).readAsBytesSync();
+
+      final thumbnailKey =
+          "posts/videos/thumbnails/${DateTime.now()} ${item.username}.jpg";
+
+      await Amplify.Storage.uploadFile(
+        localFile: AWSFile.fromStream(
+          Stream.fromIterable(thumbnailBytes.map((e) => [e])),
+          size: thumbnailBytes.length,
+        ),
+        key: thumbnailKey,
+      ).result;
+      setState(() {
+        _thumbnailKey = thumbnailKey;
+      });
     }
-    final post = Post(
-      userID: item.userId,
-      content: _postText,
-      pic_key: _picKey!,
-      video_key: _videoKey!,
-      instrument: _instruments,
-      style: _tags,
+
+    final existingUsers = await Amplify.DataStore.query(
+      User.classType,
+      where: User.USER_NAME.eq(item.username),
     );
+    final existingUser = existingUsers.first;
+
+    final post = Post(
+        userID: existingUser.id,
+        content: _postText,
+        post_key: _key!,
+        tag: _tags,
+        pp_key: existingUser.pic_key,
+        owner_username: existingUser.user_name,
+        is_photo: _isPhotoSelected,
+        thumbnail_key: _thumbnailKey);
+    final updatedUser = existingUser.copyWith(
+      Posts: [post],
+    );
+    await Amplify.DataStore.save(updatedUser);
     await Amplify.DataStore.save(post);
   }
 
@@ -406,13 +387,18 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
       setState(() {
         _availableTags = styles.expand((style) => style.style_name!).toList();
-        _availableInstruments = instruments
+        _availableTags.addAll(instruments
             .expand((instrument) => instrument.instrument_name!)
-            .toList();
+            .toList());
       });
     } on DataStoreException catch (e) {
       safePrint(
           'Something went wrong querying genres and instruments: ${e.message}');
     }
+  }
+
+  Future<void> navigate() async {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const CreatePostScreen()));
   }
 }

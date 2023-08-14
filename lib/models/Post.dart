@@ -32,10 +32,12 @@ class Post extends amplify_core.Model {
   final String? _userID;
   final List<Comment>? _Comments;
   final List<Like>? _Likes;
-  final List<String>? _style;
-  final List<String>? _instrument;
-  final String? _pic_key;
-  final String? _video_key;
+  final List<String>? _tag;
+  final String? _owner_username;
+  final String? _pp_key;
+  final String? _post_key;
+  final bool? _is_photo;
+  final String? _thumbnail_key;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -77,20 +79,28 @@ class Post extends amplify_core.Model {
     return _Likes;
   }
   
-  List<String>? get style {
-    return _style;
+  List<String>? get tag {
+    return _tag;
   }
   
-  List<String>? get instrument {
-    return _instrument;
+  String? get owner_username {
+    return _owner_username;
   }
   
-  String? get pic_key {
-    return _pic_key;
+  String? get pp_key {
+    return _pp_key;
   }
   
-  String? get video_key {
-    return _video_key;
+  String? get post_key {
+    return _post_key;
+  }
+  
+  bool? get is_photo {
+    return _is_photo;
+  }
+  
+  String? get thumbnail_key {
+    return _thumbnail_key;
   }
   
   amplify_core.TemporalDateTime? get createdAt {
@@ -101,19 +111,21 @@ class Post extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Post._internal({required this.id, content, required userID, Comments, Likes, style, instrument, pic_key, video_key, createdAt, updatedAt}): _content = content, _userID = userID, _Comments = Comments, _Likes = Likes, _style = style, _instrument = instrument, _pic_key = pic_key, _video_key = video_key, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Post._internal({required this.id, content, required userID, Comments, Likes, tag, owner_username, pp_key, post_key, is_photo, thumbnail_key, createdAt, updatedAt}): _content = content, _userID = userID, _Comments = Comments, _Likes = Likes, _tag = tag, _owner_username = owner_username, _pp_key = pp_key, _post_key = post_key, _is_photo = is_photo, _thumbnail_key = thumbnail_key, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Post({String? id, String? content, required String userID, List<Comment>? Comments, List<Like>? Likes, List<String>? style, List<String>? instrument, String? pic_key, String? video_key}) {
+  factory Post({String? id, String? content, required String userID, List<Comment>? Comments, List<Like>? Likes, List<String>? tag, String? owner_username, String? pp_key, String? post_key, bool? is_photo, String? thumbnail_key}) {
     return Post._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       content: content,
       userID: userID,
       Comments: Comments != null ? List<Comment>.unmodifiable(Comments) : Comments,
       Likes: Likes != null ? List<Like>.unmodifiable(Likes) : Likes,
-      style: style != null ? List<String>.unmodifiable(style) : style,
-      instrument: instrument != null ? List<String>.unmodifiable(instrument) : instrument,
-      pic_key: pic_key,
-      video_key: video_key);
+      tag: tag != null ? List<String>.unmodifiable(tag) : tag,
+      owner_username: owner_username,
+      pp_key: pp_key,
+      post_key: post_key,
+      is_photo: is_photo,
+      thumbnail_key: thumbnail_key);
   }
   
   bool equals(Object other) {
@@ -129,10 +141,12 @@ class Post extends amplify_core.Model {
       _userID == other._userID &&
       DeepCollectionEquality().equals(_Comments, other._Comments) &&
       DeepCollectionEquality().equals(_Likes, other._Likes) &&
-      DeepCollectionEquality().equals(_style, other._style) &&
-      DeepCollectionEquality().equals(_instrument, other._instrument) &&
-      _pic_key == other._pic_key &&
-      _video_key == other._video_key;
+      DeepCollectionEquality().equals(_tag, other._tag) &&
+      _owner_username == other._owner_username &&
+      _pp_key == other._pp_key &&
+      _post_key == other._post_key &&
+      _is_photo == other._is_photo &&
+      _thumbnail_key == other._thumbnail_key;
   }
   
   @override
@@ -146,10 +160,12 @@ class Post extends amplify_core.Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("content=" + "$_content" + ", ");
     buffer.write("userID=" + "$_userID" + ", ");
-    buffer.write("style=" + (_style != null ? _style!.toString() : "null") + ", ");
-    buffer.write("instrument=" + (_instrument != null ? _instrument!.toString() : "null") + ", ");
-    buffer.write("pic_key=" + "$_pic_key" + ", ");
-    buffer.write("video_key=" + "$_video_key" + ", ");
+    buffer.write("tag=" + (_tag != null ? _tag!.toString() : "null") + ", ");
+    buffer.write("owner_username=" + "$_owner_username" + ", ");
+    buffer.write("pp_key=" + "$_pp_key" + ", ");
+    buffer.write("post_key=" + "$_post_key" + ", ");
+    buffer.write("is_photo=" + (_is_photo != null ? _is_photo!.toString() : "null") + ", ");
+    buffer.write("thumbnail_key=" + "$_thumbnail_key" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -157,17 +173,19 @@ class Post extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Post copyWith({String? content, String? userID, List<Comment>? Comments, List<Like>? Likes, List<String>? style, List<String>? instrument, String? pic_key, String? video_key}) {
+  Post copyWith({String? content, String? userID, List<Comment>? Comments, List<Like>? Likes, List<String>? tag, String? owner_username, String? pp_key, String? post_key, bool? is_photo, String? thumbnail_key}) {
     return Post._internal(
       id: id,
       content: content ?? this.content,
       userID: userID ?? this.userID,
       Comments: Comments ?? this.Comments,
       Likes: Likes ?? this.Likes,
-      style: style ?? this.style,
-      instrument: instrument ?? this.instrument,
-      pic_key: pic_key ?? this.pic_key,
-      video_key: video_key ?? this.video_key);
+      tag: tag ?? this.tag,
+      owner_username: owner_username ?? this.owner_username,
+      pp_key: pp_key ?? this.pp_key,
+      post_key: post_key ?? this.post_key,
+      is_photo: is_photo ?? this.is_photo,
+      thumbnail_key: thumbnail_key ?? this.thumbnail_key);
   }
   
   Post copyWithModelFieldValues({
@@ -175,10 +193,12 @@ class Post extends amplify_core.Model {
     ModelFieldValue<String>? userID,
     ModelFieldValue<List<Comment>?>? Comments,
     ModelFieldValue<List<Like>?>? Likes,
-    ModelFieldValue<List<String>?>? style,
-    ModelFieldValue<List<String>?>? instrument,
-    ModelFieldValue<String?>? pic_key,
-    ModelFieldValue<String?>? video_key
+    ModelFieldValue<List<String>?>? tag,
+    ModelFieldValue<String?>? owner_username,
+    ModelFieldValue<String?>? pp_key,
+    ModelFieldValue<String?>? post_key,
+    ModelFieldValue<bool?>? is_photo,
+    ModelFieldValue<String?>? thumbnail_key
   }) {
     return Post._internal(
       id: id,
@@ -186,10 +206,12 @@ class Post extends amplify_core.Model {
       userID: userID == null ? this.userID : userID.value,
       Comments: Comments == null ? this.Comments : Comments.value,
       Likes: Likes == null ? this.Likes : Likes.value,
-      style: style == null ? this.style : style.value,
-      instrument: instrument == null ? this.instrument : instrument.value,
-      pic_key: pic_key == null ? this.pic_key : pic_key.value,
-      video_key: video_key == null ? this.video_key : video_key.value
+      tag: tag == null ? this.tag : tag.value,
+      owner_username: owner_username == null ? this.owner_username : owner_username.value,
+      pp_key: pp_key == null ? this.pp_key : pp_key.value,
+      post_key: post_key == null ? this.post_key : post_key.value,
+      is_photo: is_photo == null ? this.is_photo : is_photo.value,
+      thumbnail_key: thumbnail_key == null ? this.thumbnail_key : thumbnail_key.value
     );
   }
   
@@ -209,15 +231,17 @@ class Post extends amplify_core.Model {
           .map((e) => Like.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
-      _style = json['style']?.cast<String>(),
-      _instrument = json['instrument']?.cast<String>(),
-      _pic_key = json['pic_key'],
-      _video_key = json['video_key'],
+      _tag = json['tag']?.cast<String>(),
+      _owner_username = json['owner_username'],
+      _pp_key = json['pp_key'],
+      _post_key = json['post_key'],
+      _is_photo = json['is_photo'],
+      _thumbnail_key = json['thumbnail_key'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'content': _content, 'userID': _userID, 'Comments': _Comments?.map((Comment? e) => e?.toJson()).toList(), 'Likes': _Likes?.map((Like? e) => e?.toJson()).toList(), 'style': _style, 'instrument': _instrument, 'pic_key': _pic_key, 'video_key': _video_key, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'content': _content, 'userID': _userID, 'Comments': _Comments?.map((Comment? e) => e?.toJson()).toList(), 'Likes': _Likes?.map((Like? e) => e?.toJson()).toList(), 'tag': _tag, 'owner_username': _owner_username, 'pp_key': _pp_key, 'post_key': _post_key, 'is_photo': _is_photo, 'thumbnail_key': _thumbnail_key, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -226,10 +250,12 @@ class Post extends amplify_core.Model {
     'userID': _userID,
     'Comments': _Comments,
     'Likes': _Likes,
-    'style': _style,
-    'instrument': _instrument,
-    'pic_key': _pic_key,
-    'video_key': _video_key,
+    'tag': _tag,
+    'owner_username': _owner_username,
+    'pp_key': _pp_key,
+    'post_key': _post_key,
+    'is_photo': _is_photo,
+    'thumbnail_key': _thumbnail_key,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -244,10 +270,12 @@ class Post extends amplify_core.Model {
   static final LIKES = amplify_core.QueryField(
     fieldName: "Likes",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Like'));
-  static final STYLE = amplify_core.QueryField(fieldName: "style");
-  static final INSTRUMENT = amplify_core.QueryField(fieldName: "instrument");
-  static final PIC_KEY = amplify_core.QueryField(fieldName: "pic_key");
-  static final VIDEO_KEY = amplify_core.QueryField(fieldName: "video_key");
+  static final TAG = amplify_core.QueryField(fieldName: "tag");
+  static final OWNER_USERNAME = amplify_core.QueryField(fieldName: "owner_username");
+  static final PP_KEY = amplify_core.QueryField(fieldName: "pp_key");
+  static final POST_KEY = amplify_core.QueryField(fieldName: "post_key");
+  static final IS_PHOTO = amplify_core.QueryField(fieldName: "is_photo");
+  static final THUMBNAIL_KEY = amplify_core.QueryField(fieldName: "thumbnail_key");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Post";
     modelSchemaDefinition.pluralName = "Posts";
@@ -296,27 +324,38 @@ class Post extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Post.STYLE,
+      key: Post.TAG,
       isRequired: false,
       isArray: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Post.INSTRUMENT,
-      isRequired: false,
-      isArray: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Post.PIC_KEY,
+      key: Post.OWNER_USERNAME,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Post.VIDEO_KEY,
+      key: Post.PP_KEY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Post.POST_KEY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Post.IS_PHOTO,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Post.THUMBNAIL_KEY,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));

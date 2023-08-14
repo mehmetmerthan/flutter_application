@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _children = [
-    const HomeScreen(),
+    HomeScreen(),
     const NotificationScreen(),
     const CreatePostScreen(),
   ];

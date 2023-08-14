@@ -32,7 +32,6 @@ class User extends amplify_core.Model {
   final String? _name;
   final String? _age;
   final String? _bio;
-  final String? _pic;
   final List<Post>? _Posts;
   final String? _gender;
   final String? _email;
@@ -42,6 +41,7 @@ class User extends amplify_core.Model {
   final String? _state;
   final String? _city;
   final List<Notification>? _Notifications;
+  final String? _pic_key;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -92,10 +92,6 @@ class User extends amplify_core.Model {
     return _bio;
   }
   
-  String? get pic {
-    return _pic;
-  }
-  
   List<Post>? get Posts {
     return _Posts;
   }
@@ -132,6 +128,10 @@ class User extends amplify_core.Model {
     return _Notifications;
   }
   
+  String? get pic_key {
+    return _pic_key;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -140,16 +140,15 @@ class User extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const User._internal({required this.id, required user_name, required name, age, bio, pic, Posts, gender, email, instrument, style, country, state, city, Notifications, createdAt, updatedAt}): _user_name = user_name, _name = name, _age = age, _bio = bio, _pic = pic, _Posts = Posts, _gender = gender, _email = email, _instrument = instrument, _style = style, _country = country, _state = state, _city = city, _Notifications = Notifications, _createdAt = createdAt, _updatedAt = updatedAt;
+  const User._internal({required this.id, required user_name, required name, age, bio, Posts, gender, email, instrument, style, country, state, city, Notifications, pic_key, createdAt, updatedAt}): _user_name = user_name, _name = name, _age = age, _bio = bio, _Posts = Posts, _gender = gender, _email = email, _instrument = instrument, _style = style, _country = country, _state = state, _city = city, _Notifications = Notifications, _pic_key = pic_key, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory User({String? id, required String user_name, required String name, String? age, String? bio, String? pic, List<Post>? Posts, String? gender, String? email, List<String>? instrument, List<String>? style, String? country, String? state, String? city, List<Notification>? Notifications}) {
+  factory User({String? id, required String user_name, required String name, String? age, String? bio, List<Post>? Posts, String? gender, String? email, List<String>? instrument, List<String>? style, String? country, String? state, String? city, List<Notification>? Notifications, String? pic_key}) {
     return User._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       user_name: user_name,
       name: name,
       age: age,
       bio: bio,
-      pic: pic,
       Posts: Posts != null ? List<Post>.unmodifiable(Posts) : Posts,
       gender: gender,
       email: email,
@@ -158,7 +157,8 @@ class User extends amplify_core.Model {
       country: country,
       state: state,
       city: city,
-      Notifications: Notifications != null ? List<Notification>.unmodifiable(Notifications) : Notifications);
+      Notifications: Notifications != null ? List<Notification>.unmodifiable(Notifications) : Notifications,
+      pic_key: pic_key);
   }
   
   bool equals(Object other) {
@@ -174,7 +174,6 @@ class User extends amplify_core.Model {
       _name == other._name &&
       _age == other._age &&
       _bio == other._bio &&
-      _pic == other._pic &&
       DeepCollectionEquality().equals(_Posts, other._Posts) &&
       _gender == other._gender &&
       _email == other._email &&
@@ -183,7 +182,8 @@ class User extends amplify_core.Model {
       _country == other._country &&
       _state == other._state &&
       _city == other._city &&
-      DeepCollectionEquality().equals(_Notifications, other._Notifications);
+      DeepCollectionEquality().equals(_Notifications, other._Notifications) &&
+      _pic_key == other._pic_key;
   }
   
   @override
@@ -199,7 +199,6 @@ class User extends amplify_core.Model {
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("age=" + "$_age" + ", ");
     buffer.write("bio=" + "$_bio" + ", ");
-    buffer.write("pic=" + "$_pic" + ", ");
     buffer.write("gender=" + "$_gender" + ", ");
     buffer.write("email=" + "$_email" + ", ");
     buffer.write("instrument=" + (_instrument != null ? _instrument!.toString() : "null") + ", ");
@@ -207,6 +206,7 @@ class User extends amplify_core.Model {
     buffer.write("country=" + "$_country" + ", ");
     buffer.write("state=" + "$_state" + ", ");
     buffer.write("city=" + "$_city" + ", ");
+    buffer.write("pic_key=" + "$_pic_key" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -214,14 +214,13 @@ class User extends amplify_core.Model {
     return buffer.toString();
   }
   
-  User copyWith({String? user_name, String? name, String? age, String? bio, String? pic, List<Post>? Posts, String? gender, String? email, List<String>? instrument, List<String>? style, String? country, String? state, String? city, List<Notification>? Notifications}) {
+  User copyWith({String? user_name, String? name, String? age, String? bio, List<Post>? Posts, String? gender, String? email, List<String>? instrument, List<String>? style, String? country, String? state, String? city, List<Notification>? Notifications, String? pic_key}) {
     return User._internal(
       id: id,
       user_name: user_name ?? this.user_name,
       name: name ?? this.name,
       age: age ?? this.age,
       bio: bio ?? this.bio,
-      pic: pic ?? this.pic,
       Posts: Posts ?? this.Posts,
       gender: gender ?? this.gender,
       email: email ?? this.email,
@@ -230,7 +229,8 @@ class User extends amplify_core.Model {
       country: country ?? this.country,
       state: state ?? this.state,
       city: city ?? this.city,
-      Notifications: Notifications ?? this.Notifications);
+      Notifications: Notifications ?? this.Notifications,
+      pic_key: pic_key ?? this.pic_key);
   }
   
   User copyWithModelFieldValues({
@@ -238,7 +238,6 @@ class User extends amplify_core.Model {
     ModelFieldValue<String>? name,
     ModelFieldValue<String?>? age,
     ModelFieldValue<String?>? bio,
-    ModelFieldValue<String?>? pic,
     ModelFieldValue<List<Post>?>? Posts,
     ModelFieldValue<String?>? gender,
     ModelFieldValue<String?>? email,
@@ -247,7 +246,8 @@ class User extends amplify_core.Model {
     ModelFieldValue<String?>? country,
     ModelFieldValue<String?>? state,
     ModelFieldValue<String?>? city,
-    ModelFieldValue<List<Notification>?>? Notifications
+    ModelFieldValue<List<Notification>?>? Notifications,
+    ModelFieldValue<String?>? pic_key
   }) {
     return User._internal(
       id: id,
@@ -255,7 +255,6 @@ class User extends amplify_core.Model {
       name: name == null ? this.name : name.value,
       age: age == null ? this.age : age.value,
       bio: bio == null ? this.bio : bio.value,
-      pic: pic == null ? this.pic : pic.value,
       Posts: Posts == null ? this.Posts : Posts.value,
       gender: gender == null ? this.gender : gender.value,
       email: email == null ? this.email : email.value,
@@ -264,7 +263,8 @@ class User extends amplify_core.Model {
       country: country == null ? this.country : country.value,
       state: state == null ? this.state : state.value,
       city: city == null ? this.city : city.value,
-      Notifications: Notifications == null ? this.Notifications : Notifications.value
+      Notifications: Notifications == null ? this.Notifications : Notifications.value,
+      pic_key: pic_key == null ? this.pic_key : pic_key.value
     );
   }
   
@@ -274,7 +274,6 @@ class User extends amplify_core.Model {
       _name = json['name'],
       _age = json['age'],
       _bio = json['bio'],
-      _pic = json['pic'],
       _Posts = json['Posts'] is List
         ? (json['Posts'] as List)
           .where((e) => e?['serializedData'] != null)
@@ -294,11 +293,12 @@ class User extends amplify_core.Model {
           .map((e) => Notification.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
+      _pic_key = json['pic_key'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'user_name': _user_name, 'name': _name, 'age': _age, 'bio': _bio, 'pic': _pic, 'Posts': _Posts?.map((Post? e) => e?.toJson()).toList(), 'gender': _gender, 'email': _email, 'instrument': _instrument, 'style': _style, 'country': _country, 'state': _state, 'city': _city, 'Notifications': _Notifications?.map((Notification? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'user_name': _user_name, 'name': _name, 'age': _age, 'bio': _bio, 'Posts': _Posts?.map((Post? e) => e?.toJson()).toList(), 'gender': _gender, 'email': _email, 'instrument': _instrument, 'style': _style, 'country': _country, 'state': _state, 'city': _city, 'Notifications': _Notifications?.map((Notification? e) => e?.toJson()).toList(), 'pic_key': _pic_key, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -307,7 +307,6 @@ class User extends amplify_core.Model {
     'name': _name,
     'age': _age,
     'bio': _bio,
-    'pic': _pic,
     'Posts': _Posts,
     'gender': _gender,
     'email': _email,
@@ -317,6 +316,7 @@ class User extends amplify_core.Model {
     'state': _state,
     'city': _city,
     'Notifications': _Notifications,
+    'pic_key': _pic_key,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -327,7 +327,6 @@ class User extends amplify_core.Model {
   static final NAME = amplify_core.QueryField(fieldName: "name");
   static final AGE = amplify_core.QueryField(fieldName: "age");
   static final BIO = amplify_core.QueryField(fieldName: "bio");
-  static final PIC = amplify_core.QueryField(fieldName: "pic");
   static final POSTS = amplify_core.QueryField(
     fieldName: "Posts",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Post'));
@@ -341,6 +340,7 @@ class User extends amplify_core.Model {
   static final NOTIFICATIONS = amplify_core.QueryField(
     fieldName: "Notifications",
     fieldType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.model, ofModelName: 'Notification'));
+  static final PIC_KEY = amplify_core.QueryField(fieldName: "pic_key");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "User";
     modelSchemaDefinition.pluralName = "Users";
@@ -378,12 +378,6 @@ class User extends amplify_core.Model {
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
       key: User.BIO,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: User.PIC,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
@@ -444,6 +438,12 @@ class User extends amplify_core.Model {
       isRequired: false,
       ofModelName: 'Notification',
       associatedKey: Notification.USERID
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: User.PIC_KEY,
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(

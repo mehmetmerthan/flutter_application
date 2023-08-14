@@ -38,10 +38,12 @@ type Post @model @auth(rules: [{allow: public}]) {
   userID: ID! @index(name: "byUser")
   Comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
   Likes: [Like] @hasMany(indexName: "byPost", fields: ["id"])
-  style: [String]
-  instrument: [String]
-  pic_key: String
-  video_key: String
+  tag: [String]
+  owner_username: String
+  pp_key: String
+  post_key: String
+  is_photo: Boolean
+  thumbnail_key: String
 }
 
 type User @model @auth(rules: [{allow: public}]) {
@@ -50,7 +52,6 @@ type User @model @auth(rules: [{allow: public}]) {
   name: String!
   age: String
   bio: String
-  pic: String
   Posts: [Post] @hasMany(indexName: "byUser", fields: ["id"])
   gender: String
   email: String
@@ -60,5 +61,6 @@ type User @model @auth(rules: [{allow: public}]) {
   state: String
   city: String
   Notifications: [Notification] @hasMany(indexName: "byUser", fields: ["id"])
+  pic_key: String
 }
  

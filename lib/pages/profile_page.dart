@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
           if (!isLoading && hasImage)
             CircleAvatar(
               radius: 80,
-              backgroundImage: MemoryImage(myImage!),
+              backgroundImage: NetworkImage(url!),
             ),
           if (!isLoading && !hasImage && hasError)
             const CircleAvatar(
@@ -53,6 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  String? key;
+  String? url;
   Future<void> getKey() async {
     final item = await Amplify.Auth.getCurrentUser();
     try {
@@ -61,26 +63,24 @@ class _ProfilePageState extends State<ProfilePage> {
         where: User.USER_NAME.eq(item.username),
       );
       final existingUser = existingUsers.first;
-      myKey = existingUser.pic;
+      myKey = existingUser.pic_key;
     } on StorageException catch (e) {
       setState(() {
         hasError = true;
+        key = myKey;
       });
       safePrint(e.message);
     }
-    downloadToMemory();
+    //downloadToMemory();
   }
 
-  Future<void> downloadToMemory() async {
+  Future<void> getUrl() async {
     try {
-      final result = await Amplify.Storage.downloadData(
-        key: myKey!,
-        onProgress: (progress) {
-          safePrint('Fraction completed: ${progress.fractionCompleted}');
-        },
+      final result = await Amplify.Storage.getUrl(
+        key: key!,
       ).result;
       setState(() {
-        myImage = Uint8List.fromList(result.bytes);
+        url = result.url.toString();
         isLoading = false;
         hasImage = true;
       });
